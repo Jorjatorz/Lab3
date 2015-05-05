@@ -1,0 +1,116 @@
+   1              	# 1 "../init.asm"
+   1              	/*-----------------------------------------------------------------
+   0              	
+   0              	
+   0              	
+   2              	**
+   3              	**  Fichero:
+   4              	**    init.asm  10/6/2014
+   5              	**
+   6              	**    Estructura de Computadores
+   7              	**    Dpto. de Arquitectura de Computadores y Automática
+   8              	**    Facultad de Informática. Universidad Complutense de Madrid
+   9              	**
+  10              	**  Propósito:
+  11              	**    Arranca un programa en C
+  12              	**
+  13              	**  Notas de diseño:
+  14              	**
+  15              	**---------------------------------------------------------------*/
+  16              	
+  17              	    .extern main
+  18              		.global start
+  19              		
+  20              		/*
+  21              		** Modos de operación
+  22              		*/
+  23              		.equ MODEMASK, 0x1f		/* Para selección de M[4:0] del CPSR */
+  24              		.equ USRMODE,  0x10
+  25              		.equ FIQMODE,  0x11
+  26              		.equ IRQMODE,  0x12
+  27              		.equ SVCMODE,  0x13
+  28              		.equ ABTMODE,  0x17
+  29              		.equ UNDMODE,  0x1b
+  30              		.equ SYSMODE,  0x1f
+  31              	
+  32              		/*
+  33              		** Direcciones de las bases de las pilas del sistema 
+  34              		*/
+  35              		.equ USRSTACK, 0xc7ff000   	
+  36              		.equ SVCSTACK, 0xc7ff100
+  37              		.equ UNDSTACK, 0xc7ff200
+  38              		.equ ABTSTACK, 0xc7ff300
+  39              		.equ IRQSTACK, 0xc7ff400
+  40              		.equ FIQSTACK, 0xc7ff500
+  41              	
+  42              		/*
+  43              		** Registro de máscara de interrupción
+  44              		*/
+  45              		.equ rINTMSK,    0x1e0000c
+  46              	
+  47              	start:
+  48              	
+  49              		/* Pasa a modo supervisor */
+  50 0000 00000FE1 	    mrs	r0, cpsr
+  51 0004 1F00C0E3 	    bic	r0, r0, #MODEMASK
+  52 0008 131080E3 	    orr	r1, r0, #SVCMODE
+  53 000c 01F021E1 	    msr	cpsr_c, r1 
+  54              	
+  55              		/* Enmascara interrupciones */
+  56 0010 38009FE5 		ldr r0, =rINTMSK
+  57 0014 0E12E0E3 		ldr r1, =0x1fffffff
+  58 0018 001080E5 	    str r1, [r0]
+  59              	
+  60              		/* Habilita linea IRQ del CPSR */
+  61 001c 00000FE1 		mrs r0, cpsr
+  62 0020 8000C0E3 		bic r0, r0, #0x80
+  63 0024 00F021E1 		msr cpsr_c, r0
+  64              		
+  65              		/* Desde modo SVC inicializa los SP de todos los modos de ejecución privilegiados */
+  66 0028 070000EB 	    bl InitStacks
+  67              		
+  68              		/* Desde modo SVC cambia a modo USR e inicializa el SP_usr */
+  69 002c 00000FE1 		mrs r0, cpsr
+  70 0030 1F00C0E3 		bic r0, r0, #MODEMASK
+  71 0034 101080E3 		orr r1, r0, #USRMODE  
+  72 0038 01F021E1 		msr cpsr_c, r1
+  73 003c 10D09FE5 		ldr sp, =USRSTACK
+  74              	
+  75 0040 00B0A0E3 	    mov fp, #0
+  76              	
+  77 0044 FEFFFFEB 	    bl main
+  78              	
+  79              	End:
+  80 0048 FEFFFFEA 	    B End
+  81              	
+  82              	InitStacks:
+  83              		@ Completar
+  84 004c 0EF0A0E1 	    mov pc, lr
+  85              	
+  86 0050 0C00E001 		.end
+  86      00F07F0C 
+DEFINED SYMBOLS
+         ../init.asm:47     .text:00000000 start
+         ../init.asm:23     *ABS*:0000001f MODEMASK
+         ../init.asm:24     *ABS*:00000010 USRMODE
+         ../init.asm:25     *ABS*:00000011 FIQMODE
+         ../init.asm:26     *ABS*:00000012 IRQMODE
+         ../init.asm:27     *ABS*:00000013 SVCMODE
+         ../init.asm:28     *ABS*:00000017 ABTMODE
+         ../init.asm:29     *ABS*:0000001b UNDMODE
+         ../init.asm:30     *ABS*:0000001f SYSMODE
+         ../init.asm:35     *ABS*:0c7ff000 USRSTACK
+         ../init.asm:36     *ABS*:0c7ff100 SVCSTACK
+         ../init.asm:37     *ABS*:0c7ff200 UNDSTACK
+         ../init.asm:38     *ABS*:0c7ff300 ABTSTACK
+         ../init.asm:39     *ABS*:0c7ff400 IRQSTACK
+         ../init.asm:40     *ABS*:0c7ff500 FIQSTACK
+         ../init.asm:45     *ABS*:01e0000c rINTMSK
+         ../init.asm:50     .text:00000000 $a
+         ../init.asm:82     .text:0000004c InitStacks
+         ../init.asm:79     .text:00000048 End
+         ../init.asm:86     .text:00000050 $d
+                   .debug_aranges:0000000c $d
+
+UNDEFINED SYMBOLS
+main

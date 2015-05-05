@@ -1,0 +1,108 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"timer.c"
+  21              	.Ltext0:
+  22              		.file 1 "../timer.c"
+ 1795              		.align	2
+ 1797              	timer_ISR:
+ 1798              	.LFB0:
+   1:../timer.c    **** /*-------------------------------------------------------------------
+   2:../timer.c    **** **
+   3:../timer.c    **** **  Fichero:
+   4:../timer.c    **** **    timer.h  10/6/2014
+   5:../timer.c    **** **
+   6:../timer.c    **** **    Estructura de Computadores
+   7:../timer.c    **** **    Dpto. de Arquitectura de Computadores y Automática
+   8:../timer.c    **** **    Facultad de Informática. Universidad Complutense de Madrid
+   9:../timer.c    **** **
+  10:../timer.c    **** **  Propósito:
+  11:../timer.c    **** **    Contiene las definiciones de los prototipos de funciones
+  12:../timer.c    **** **    para la gestión del timer 0 del chip S3C44BOX
+  13:../timer.c    **** **
+  14:../timer.c    **** **  Notas de diseño:
+  15:../timer.c    **** **
+  16:../timer.c    **** **-----------------------------------------------------------------*/
+  17:../timer.c    **** 
+  18:../timer.c    **** #include "44b.h"
+  19:../timer.c    **** #include "leds.h"
+  20:../timer.c    **** #include "D8led.h"
+  21:../timer.c    **** #include "timer.h"
+  22:../timer.c    **** 
+  23:../timer.c    **** 
+  24:../timer.c    **** 
+  25:../timer.c    **** static void timer_ISR(void) __attribute__ ((interrupt ("IRQ")));
+  26:../timer.c    **** 
+  27:../timer.c    **** static void timer_ISR( void )
+  28:../timer.c    **** {
+ 1799              		.loc 1 28 0
+ 1800              		.cfi_startproc
+ 1801              		@ Interrupt Service Routine.
+ 1802              		@ args = 0, pretend = 0, frame = 0
+ 1803              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1804 0000 04C02DE5 		str	ip, [sp, #-4]!
+ 1805 0004 0DC0A0E1 		mov	ip, sp
+ 1806              	.LCFI0:
+ 1807              		.cfi_def_cfa_register 12
+ 1808 0008 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1809 000c 04B04CE2 		sub	fp, ip, #4
+ 1810              		.cfi_offset 14, -8
+ 1811              		.cfi_offset 13, -12
+ 1812              		.cfi_offset 11, -16
+ 1813              	.LCFI1:
+ 1814              		.cfi_def_cfa 11, 4
+  29:../timer.c    **** 	
+  30:../timer.c    **** }
+ 1815              		.loc 1 30 0
+ 1816 0010 0CD04BE2 		sub	sp, fp, #12
+ 1817 0014 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1818 0018 04C09DE4 		ldmfd	sp!, {ip}
+ 1819 001c 04F05EE2 		subs	pc, lr, #4
+ 1820              		.cfi_endproc
+ 1821              	.LFE0:
+ 1823              		.align	2
+ 1824              		.global	timer_init
+ 1826              	timer_init:
+ 1827              	.LFB1:
+  31:../timer.c    **** 
+  32:../timer.c    **** void timer_init(void)
+  33:../timer.c    **** {
+ 1828              		.loc 1 33 0
+ 1829              		.cfi_startproc
+ 1830              		@ Function supports interworking.
+ 1831              		@ args = 0, pretend = 0, frame = 0
+ 1832              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1833 0020 0DC0A0E1 		mov	ip, sp
+ 1834              	.LCFI2:
+ 1835              		.cfi_def_cfa_register 12
+ 1836 0024 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1837 0028 04B04CE2 		sub	fp, ip, #4
+ 1838              		.cfi_offset 14, -8
+ 1839              		.cfi_offset 13, -12
+ 1840              		.cfi_offset 11, -16
+ 1841              	.LCFI3:
+ 1842              		.cfi_def_cfa 11, 4
+  34:../timer.c    **** 
+  35:../timer.c    **** }
+ 1843              		.loc 1 35 0
+ 1844 002c 0CD04BE2 		sub	sp, fp, #12
+ 1845 0030 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1846 0034 1EFF2FE1 		bx	lr
+ 1847              		.cfi_endproc
+ 1848              	.LFE1:
+ 1850              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 timer.c
+C:\Users\USUARI~1\AppData\Local\Temp\ccD0gDL4.s:1795   .text:00000000 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccD0gDL4.s:1797   .text:00000000 timer_ISR
+C:\Users\USUARI~1\AppData\Local\Temp\ccD0gDL4.s:1826   .text:00000020 timer_init
+                     .debug_frame:00000010 $d
+
+NO UNDEFINED SYMBOLS
