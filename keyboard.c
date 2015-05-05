@@ -30,13 +30,21 @@ void keyboard_init( void )
 
 	/* Configurar puerto G para interrupciones del teclado */
 
-	/* Establecer ISR de teclado */
+	rPCONG = 0xffff; //All the pins interrupts in their lines
 
+	/* Establecer ISR de teclado */
+	pISR_EINT1 = keyboard_ISR;
 
 	/*Borrar interrupciones antes habilitar*/
 
+	 rI_ISPC = 0x3ffffff;	//  -Borramos pendientes por IRQ
+	 rF_ISPC = 0x3ffffff; 	//  -Borramos pendientes FIQ
+
 
     /* Desenmascara la línea del teclado y el bit global */
+
+	 rINTMSK =& ~BIT_GLOBAL;	//Unmask global bit
+	 rINTMSK =& BIT_EINT1;	 	//Unmask keybouard line
 
 }
 
@@ -122,7 +130,8 @@ static void keyboard_ISR(void)
 	key = key_read();
 
 	// En caso de error, key = -1
-	// COMPLETAR !!!!
+	if (key != -1)
+		D8Led_digit(key); //Display the key on the D8 Led
 
 	/* Esperar a que la tecla se suelte */
 	while (!(rPDATG & 0x02));
@@ -131,6 +140,8 @@ static void keyboard_ISR(void)
     Delay(2000);
 
     /* Borrar interrupciones pendientes */
+    rI_ISPC |= BIT_EINT1;
+
 
 }
 

@@ -80,8 +80,46 @@ End:
     B End
 
 InitStacks:
-	@ Completar
+	/* Pasa a modo Undef e inicializa el SP_und */
+
+    mrs	r0, cpsr				/* Llevamos el registro de estado a r0 */
+    bic	r0, r0, #MODEMASK		/* Borramos los bits de modo de r0 */
+    orr	r1, r0, #UNDMODE		/* Añadimos el código del modo Undef y copiamos en r1 */
+    msr	cpsr_c, r1				/* Escribimos el resultado en el registro de estado */
+    ldr sp, =UNDSTACK			/* Copiamos la	dirección de comienzo de la pila */
+
+	/* Pasa a modo Abort e inicializa el SP_abt */
+
+    mrs	r0, cpsr				/* Llevamos el registro de estado a r0 */
+    bic	r0, r0, #MODEMASK		/* Borramos los bits de modo de r0 */
+    orr	r1, r0, #ABTMODE		/* Añadimos el código del modo Abort y copiamos en r1 */
+    msr	cpsr_c, r1				/* Escribimos el resultado en el registro de estado */
+    ldr sp, =ABTSTACK			/* Copiamos la	dirección de comienzo de la pila */
+
+    /* Pasa a modo IRQ e inicializa el SP_irq */
+
+    mrs	r0, cpsr				/* Llevamos el registro de estado a r0 */
+    bic	r0, r0, #MODEMASK		/* Borramos los bits de modo de r0 */
+    orr	r1, r0, #IRQMODE		/* Añadimos el código del modo Undef y copiamos en r1 */
+    msr	cpsr_c, r1				/* Escribimos el resultado en el registro de estado */
+    ldr sp, =IRQSTACK			/* Copiamos la	dirección de comienzo de la pila */
+
+	/* Pasa a modo FIQ e inicializa el SP_fiq */
+
+    mrs	r0, cpsr				/* Llevamos el registro de estado a r0 */
+    bic	r0, r0, #MODEMASK		/* Borramos los bits de modo de r0 */
+    orr	r1, r0, #FIQMODE		/* Añadimos el código del modo Undef y copiamos en r1 */
+    msr	cpsr_c, r1				/* Escribimos el resultado en el registro de estado */
+    ldr sp, =FIQSTACK			/* Copiamos la	dirección de comienzo de la pila */
+
+    /* Pasa a modo SVC e inicializa el SP_svc */
+
+    mrs	r0, cpsr				/* Llevamos el registro de estado a r0 */
+    bic	r0, r0, #MODEMASK		/* Borramos los bits de modo de r0 */
+    orr	r1, r0, #SVCMODE		/* Añadimos el código del modo Undef y copiamos en r1 */
+    msr	cpsr_c, r1				/* Escribimos el resultado en el registro de estado */
+    ldr sp, =SVCSTACK			/* Copiamos la	dirección de comienzo de la pila */
+
     mov pc, lr
 
 	.end
-
