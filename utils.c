@@ -15,6 +15,8 @@
 **
 **-----------------------------------------------------------------*/
 
+#include "utils.h"
+
 #include "44b.h"
 #define MCLK 64000000
 
@@ -47,3 +49,11 @@ void Delay(int time)
 	}
 }
 
+void insertElementToFIFO(tQueue* queue, int element)
+{
+	if(queue->elements < 4)
+	{
+		queue->_queue[queue->elements] = element;
+		queue->elements = queue->elements + 1;
+	}
+}

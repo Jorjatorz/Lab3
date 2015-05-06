@@ -55,25 +55,112 @@
  1828              		.cfi_offset 11, -16
  1829              	.LCFI1:
  1830              		.cfi_def_cfa 11, 4
-  26:../main.c     **** 
-  27:../main.c     **** 
-  28:../main.c     **** 	Delay(0);
- 1831              		.loc 1 28 0
- 1832 000c 0000A0E3 		mov	r0, #0
- 1833 0010 FEFFFFEB 		bl	Delay
- 1834              	.L2:
-  29:../main.c     **** 		
-  30:../main.c     **** 	while(1);
- 1835              		.loc 1 30 0 discriminator 1
- 1836 0014 FEFFFFEA 		b	.L2
- 1837              		.cfi_endproc
- 1838              	.LFE0:
- 1840              	.Letext0:
+  26:../main.c     **** 	intcont_init();
+ 1831              		.loc 1 26 0
+ 1832 000c 18309FE5 		ldr	r3, .L3
+ 1833 0010 0FE0A0E1 		mov	lr, pc
+ 1834 0014 13FF2FE1 		bx	r3
+  27:../main.c     **** 	D8Led_init();
+ 1835              		.loc 1 27 0
+ 1836 0018 FEFFFFEB 		bl	D8Led_init
+  28:../main.c     **** 	D8Led_digit( 0 );  	//Displays 0 in the 8Segment display
+ 1837              		.loc 1 28 0
+ 1838 001c 0000A0E3 		mov	r0, #0
+ 1839 0020 FEFFFFEB 		bl	D8Led_digit
+  29:../main.c     **** 	keyboard_init(); 	//Initialize the configuration of the matrix keyboard
+ 1840              		.loc 1 29 0
+ 1841 0024 FEFFFFEB 		bl	keyboard_init
+ 1842              	.L2:
+  30:../main.c     **** 		
+  31:../main.c     **** 	while(1);
+ 1843              		.loc 1 31 0 discriminator 1
+ 1844 0028 FEFFFFEA 		b	.L2
+ 1845              	.L4:
+ 1846              		.align	2
+ 1847              	.L3:
+ 1848 002c 00000000 		.word	intcont_init
+ 1849              		.cfi_endproc
+ 1850              	.LFE0:
+ 1852              		.align	2
+ 1853              		.global	intcont_init
+ 1855              	intcont_init:
+ 1856              	.LFB1:
+  32:../main.c     **** 	return 0;
+  33:../main.c     **** }
+  34:../main.c     **** 
+  35:../main.c     **** void intcont_init(void) {
+ 1857              		.loc 1 35 0
+ 1858              		.cfi_startproc
+ 1859              		@ Function supports interworking.
+ 1860              		@ args = 0, pretend = 0, frame = 0
+ 1861              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1862 0030 0DC0A0E1 		mov	ip, sp
+ 1863              	.LCFI2:
+ 1864              		.cfi_def_cfa_register 12
+ 1865 0034 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1866 0038 04B04CE2 		sub	fp, ip, #4
+ 1867              		.cfi_offset 14, -8
+ 1868              		.cfi_offset 13, -12
+ 1869              		.cfi_offset 11, -16
+ 1870              	.LCFI3:
+ 1871              		.cfi_def_cfa 11, 4
+  36:../main.c     **** 	rINTCON = 0x1;			// - Modo vectorizado, FIQ deshabilitadas
+ 1872              		.loc 1 36 0
+ 1873 003c 1E36A0E3 		mov	r3, #31457280
+ 1874 0040 0120A0E3 		mov	r2, #1
+ 1875 0044 002083E5 		str	r2, [r3, #0]
+  37:../main.c     **** 	rINTMOD = 0x00000000;	// - Configurar todas las interrupciones por IRQ
+ 1876              		.loc 1 37 0
+ 1877 0048 40309FE5 		ldr	r3, .L6
+ 1878 004c 0020A0E3 		mov	r2, #0
+ 1879 0050 002083E5 		str	r2, [r3, #0]
+  38:../main.c     **** 	rI_ISPC = 0x3ffffff;	//  -Borramos pendientes por IRQ
+ 1880              		.loc 1 38 0
+ 1881 0054 38309FE5 		ldr	r3, .L6+4
+ 1882 0058 3F23E0E3 		mvn	r2, #-67108864
+ 1883 005c 002083E5 		str	r2, [r3, #0]
+  39:../main.c     **** 	rF_ISPC = 0x3ffffff; 	//  -Borramos pendientes FIQ
+ 1884              		.loc 1 39 0
+ 1885 0060 30309FE5 		ldr	r3, .L6+8
+ 1886 0064 3F23E0E3 		mvn	r2, #-67108864
+ 1887 0068 002083E5 		str	r2, [r3, #0]
+  40:../main.c     **** 	rEXTINTPND = 0x0;		// - Borrar EXTINPND
+ 1888              		.loc 1 40 0
+ 1889 006c 28309FE5 		ldr	r3, .L6+12
+ 1890 0070 0020A0E3 		mov	r2, #0
+ 1891 0074 002083E5 		str	r2, [r3, #0]
+  41:../main.c     **** 	rINTMSK = 0x4000000;	// - Enmascarar todas las líneas, pero activar BIT_GLOBAL
+ 1892              		.loc 1 41 0
+ 1893 0078 20309FE5 		ldr	r3, .L6+16
+ 1894 007c 0123A0E3 		mov	r2, #67108864
+ 1895 0080 002083E5 		str	r2, [r3, #0]
+  42:../main.c     **** }
+ 1896              		.loc 1 42 0
+ 1897 0084 0CD04BE2 		sub	sp, fp, #12
+ 1898 0088 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1899 008c 1EFF2FE1 		bx	lr
+ 1900              	.L7:
+ 1901              		.align	2
+ 1902              	.L6:
+ 1903 0090 0800E001 		.word	31457288
+ 1904 0094 2400E001 		.word	31457316
+ 1905 0098 3C00E001 		.word	31457340
+ 1906 009c 5400D201 		.word	30539860
+ 1907 00a0 0C00E001 		.word	31457292
+ 1908              		.cfi_endproc
+ 1909              	.LFE1:
+ 1911              	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\USUARI~1\AppData\Local\Temp\ccbCZSOK.s:1811   .text:00000000 $a
-C:\Users\USUARI~1\AppData\Local\Temp\ccbCZSOK.s:1814   .text:00000000 main
+C:\Users\Jorge\AppData\Local\Temp\cchYt3Zs.s:1811   .text:00000000 $a
+C:\Users\Jorge\AppData\Local\Temp\cchYt3Zs.s:1814   .text:00000000 main
+C:\Users\Jorge\AppData\Local\Temp\cchYt3Zs.s:1848   .text:0000002c $d
+C:\Users\Jorge\AppData\Local\Temp\cchYt3Zs.s:1855   .text:00000030 intcont_init
+C:\Users\Jorge\AppData\Local\Temp\cchYt3Zs.s:1852   .text:00000030 $a
+C:\Users\Jorge\AppData\Local\Temp\cchYt3Zs.s:1903   .text:00000090 $d
                      .debug_frame:00000010 $d
 
 UNDEFINED SYMBOLS
-Delay
+D8Led_init
+D8Led_digit
+keyboard_init

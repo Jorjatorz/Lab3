@@ -15,9 +15,15 @@
 **
 **-----------------------------------------------------------------*/
 
+#include "utils.h"
+
 #ifndef _TIMER_H_
 #define _TIMER_H_
 
-void timer_init( void ); 
+void timer_init( int seconds );
+
+void timer_start(tQueue queue);
+
+void timer_stop(void);
 
 #endif

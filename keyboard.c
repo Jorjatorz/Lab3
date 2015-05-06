@@ -43,8 +43,8 @@ void keyboard_init( void )
 
     /* Desenmascara la línea del teclado y el bit global */
 
-	 rINTMSK =& ~BIT_GLOBAL;	//Unmask global bit
-	 rINTMSK =& BIT_EINT1;	 	//Unmask keybouard line
+	 rINTMSK &= ~BIT_GLOBAL;	//Unmask global bit
+	 rINTMSK &= BIT_EINT1;	 	//Unmask keybouard line
 
 }
 

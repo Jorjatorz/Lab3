@@ -21,4 +21,13 @@
 
 void Delay( int time );
 
+typedef struct
+{
+	short int _queue[4];
+
+	short int elements;
+} tQueue;
+
+void insertElementToFIFO(tQueue* queue, int element);
+
 #endif
