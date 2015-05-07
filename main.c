@@ -34,9 +34,9 @@ int main(void)
 
 void intcont_init(void) {
 	rINTCON = 0x1;			// - Modo vectorizado, FIQ deshabilitadas
-	rINTMOD = 0x00000000;	// - Configurar todas las interrupciones por IRQ
+	rINTMOD = 0x0;	// - Configurar todas las interrupciones por IRQ
 	rI_ISPC = 0x3ffffff;	//  -Borramos pendientes por IRQ
 	rF_ISPC = 0x3ffffff; 	//  -Borramos pendientes FIQ
 	rEXTINTPND = 0x0;		// - Borrar EXTINPND
-	rINTMSK = 0x4000000;	// - Enmascarar todas las líneas, pero activar BIT_GLOBAL
+	rINTMSK = 0x7FFFFFF;	// - Enmascarar todas las líneas, pero activar BIT_GLOBAL
 }

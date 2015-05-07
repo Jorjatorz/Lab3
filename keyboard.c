@@ -18,12 +18,15 @@
 #include "44b.h"
 #include "utils.h"
 #include "keyboard.h"
+#include "timer.h"
 
 #define KEY_VALUE_MASK	0x0f
 
 
 static int key_read( void );
 static void keyboard_ISR(void) __attribute__ ((interrupt ("IRQ")));
+
+static tQueue queue;
 
 void keyboard_init( void )
 {
@@ -44,7 +47,11 @@ void keyboard_init( void )
     /* Desenmascara la línea del teclado y el bit global */
 
 	 rINTMSK &= ~BIT_GLOBAL;	//Unmask global bit
-	 rINTMSK &= BIT_EINT1;	 	//Unmask keybouard line
+	 rINTMSK &= ~BIT_EINT1;	 	//Unmask keybouard line
+
+
+
+	 queue.elements = 0;
 
 }
 
@@ -124,7 +131,7 @@ static void keyboard_ISR(void)
 	int key;
 
 	/* Eliminar rebotes de presion */
-	Delay(2000);
+	Delay(200);
 
 	/* Escaneo de tecla */
 	key = key_read();
@@ -133,14 +140,23 @@ static void keyboard_ISR(void)
 	if (key != -1)
 		D8Led_digit(key); //Display the key on the D8 Led
 
+	insertElementToFIFO(&queue, key);
+
 	/* Esperar a que la tecla se suelte */
 	while (!(rPDATG & 0x02));
 
     /* Eliminar rebotes de depreson */
-    Delay(2000);
+    Delay(200);
 
     /* Borrar interrupciones pendientes */
     rI_ISPC |= BIT_EINT1;
+
+    if(queue.elements == 4)
+    {
+   	 timer_init(1);
+   	 timer_start(queue);
+    }
+
 
 
 }

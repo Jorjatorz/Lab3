@@ -455,7 +455,7 @@
  2097 027c 022BA0E3 		mov	r2, #2048
  2098 0280 002083E5 		str	r2, [r3, #0]
  153:../timer.c    **** 
- 154:../timer.c    **** 		/* Se borra el bit de interrupción pendiente del TIMER2 */
+ 154:../timer.c    **** 		/* Se borra el bit de interrupción pendiente del TIMER1 */
  155:../timer.c    **** 
  156:../timer.c    **** 		rI_ISPC |= BIT_TIMER1;
  2099              		.loc 1 156 0
@@ -496,22 +496,22 @@
  2129              	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:00000000 timer.c
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:1803   .bss:00000000 $d
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:1804   .bss:00000000 timerStarted
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:1807   .bss:00000004 mQueue
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:1810   .bss:00000010 counter
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:1813   .text:00000000 $a
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:1815   .text:00000000 timer_ISR
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:2061   .text:00000234 timer_stop
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:1878   .text:00000088 $d
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:1884   .text:00000094 $a
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:1887   .text:00000094 timer_init
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:1952   .text:00000124 $d
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:1963   .text:00000144 $a
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:1966   .text:00000144 timer_start
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:2049   .text:0000021c $d
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:2058   .text:00000234 $a
-C:\Users\Jorge\AppData\Local\Temp\ccdOS6PT.s:2122   .text:000002c4 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:1803   .bss:00000000 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:1804   .bss:00000000 timerStarted
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:1807   .bss:00000004 mQueue
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:1810   .bss:00000010 counter
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:1813   .text:00000000 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:1815   .text:00000000 timer_ISR
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:2061   .text:00000234 timer_stop
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:1878   .text:00000088 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:1884   .text:00000094 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:1887   .text:00000094 timer_init
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:1952   .text:00000124 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:1963   .text:00000144 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:1966   .text:00000144 timer_start
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:2049   .text:0000021c $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:2058   .text:00000234 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccSl42rI.s:2122   .text:000002c4 $d
                      .debug_frame:00000010 $d
 
 UNDEFINED SYMBOLS

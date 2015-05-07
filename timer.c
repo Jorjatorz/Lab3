@@ -151,13 +151,13 @@ void timer_stop(void)
 		//stop and auto-reload
 		rTCON = 0x800;
 
-		/* Se borra el bit de interrupción pendiente del TIMER2 */
+		/* Se borra el bit de interrupción pendiente del TIMER1 */
 
 		rI_ISPC |= BIT_TIMER1;
 
 		timerStarted = 0;
 
 		/* Enmascarar la linea del timer 1 */
-		   rINTMSK |= BIT_TIMER1;
+		 rINTMSK |= BIT_TIMER1;
 }
 
