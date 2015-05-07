@@ -35,6 +35,8 @@ void leds_init( void )
 {
 	rPCONB = 0x1ff;
 	leds_display( status );
+	led1_off();
+	led2_off();
 }
 
 void led1_on( void )

@@ -43,6 +43,7 @@ static void timer_ISR( void )
 		}
 	}
 
+
 	rI_ISPC |= BIT_TIMER1;
 }
 

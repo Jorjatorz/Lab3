@@ -146,13 +146,24 @@ static void keyboard_ISR(void)
 		D8Led_digit(key); //Display the key on the D8 Led*/
 
 	/*****************************************GAME LOGIC**********************************************************/
+	//Turns off the leds
+	led1_off();
+	led2_off();
+
 	//Password mode
 	if(gameCurrentMode == 0)
 	{
 		//Si la tecla pulsada no es la F
 		if(key != 15)
 		{
-			insertElementToQueue(&password, key);
+			if (key > 0) //Is a valid key
+				insertElementToQueue(&password, key);
+			else {
+				//There was an error reading the key -> Turn on the leds
+				led1_on();
+				led2_on();
+			}
+
 		}
 		else
 		{

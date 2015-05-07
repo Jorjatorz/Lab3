@@ -27,6 +27,7 @@ int main(void)
 	D8Led_init();
 	D8Led_digit( 0 );  	//Displays 0 in the 8Segment display
 	keyboard_init(); 	//Initialize the configuration of the matrix keyboard
+	leds_init(); //Initializes the leds
 		
 	while(1);
 	return 0;
