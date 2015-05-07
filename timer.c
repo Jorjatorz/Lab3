@@ -61,7 +61,7 @@ void timer_init(int seconds)
 			rTCFG1 = 0x20;
 
 		/* pre-escalado 255 */
-		rTCFG0 = 0xFF00;
+		rTCFG0 = 0xFF;
 
 		/* Pre-Escalado 1 [15:8] : Estos ocho bits determinan el factor de pre-escalado
 		 * de los temporizadores 2 y 3
