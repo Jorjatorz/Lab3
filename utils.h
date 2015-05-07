@@ -28,6 +28,6 @@ typedef struct
 	short int elements;
 } tQueue;
 
-void insertElementToFIFO(tQueue* queue, int element);
+void insertElementToQueue(tQueue* queue, int element);
 
 #endif

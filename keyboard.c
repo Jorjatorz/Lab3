@@ -26,7 +26,9 @@
 static int key_read( void );
 static void keyboard_ISR(void) __attribute__ ((interrupt ("IRQ")));
 
-static tQueue queue;
+static tQueue password;
+static tQueue attempt;
+static int gameCurrentMode = 0; //0 -> Asking Password, 1 -> Asking for match
 
 void keyboard_init( void )
 {
@@ -50,8 +52,11 @@ void keyboard_init( void )
 	 rINTMSK &= ~BIT_EINT1;	 	//Unmask keybouard line
 
 
-
-	 queue.elements = 0;
+	 //Inicializamos la cola y el display para mostrar una C
+	 password.elements = 0;
+	 attempt.elements = 0;
+	 gameCurrentMode = 0;
+	 D8Led_digit(12); //Display C
 
 }
 
@@ -137,10 +142,91 @@ static void keyboard_ISR(void)
 	key = key_read();
 
 	// En caso de error, key = -1
-	if (key != -1)
-		D8Led_digit(key); //Display the key on the D8 Led
+	/*if (key != -1)
+		D8Led_digit(key); //Display the key on the D8 Led*/
 
-	insertElementToFIFO(&queue, key);
+	/*****************************************GAME LOGIC**********************************************************/
+	//Password mode
+	if(gameCurrentMode == 0)
+	{
+		//Si la tecla pulsada no es la F
+		if(key != 15)
+		{
+			insertElementToQueue(&password, key);
+		}
+		else
+		{
+			//Si la pass tiene 4 digitos msotrarlos cada segundo, sino no hacer nada
+			if(password.elements == 4)
+			{
+				 timer_init(1); //Cada 1 segundo
+				 timer_start(password);
+
+				 while(!timer_isStop())
+				 {}
+
+				gameCurrentMode = 1; //Cambiar de modo
+				D8Led_digit(15); //Mostar F
+			}
+		}
+	}
+	else
+	{
+		//Si la tecla pulsada no es la F
+		if(key != 15)
+		{
+			insertElementToQueue(&attempt, key);
+		}
+		else
+		{
+			//Si el attempt tiene 4 digitos msotrarlos cada segundo, sino no hacer nada
+			if(attempt.elements == 4)
+			{
+			 timer_init(1);
+			 timer_start(attempt);
+
+			 while(!timer_isStop())
+			 {}
+				 int equals = 1;
+				 int i;
+				 for(i = 0; i < 4; i++)
+				 {
+					 if(password._queue[i] != attempt._queue[i])
+					 {
+						 equals = 0;
+						 break;
+					 }
+				 }
+
+				 //Hacer una lista negativa para que el timer no la muestre
+				 tQueue emptyQ;
+				 emptyQ.elements = -1;
+				 if(equals == 1)
+				 {
+					 D8Led_digit(10); //A
+					 timer_init(2);
+					 timer_start(emptyQ);
+					 while(!timer_isStop())
+					 {}
+				 }
+				 else
+				 {
+					 D8Led_digit(14); //E
+					 timer_init(2);
+					 timer_start(emptyQ);
+					 while(!timer_isStop())
+					{}
+				 }
+
+
+				 //Volvemos a empezar el juego
+				 gameCurrentMode = 0; //Cambiar de modo
+				 D8Led_digit(15); //Mostar C
+
+			}
+		}
+	}
+	/**************************************************************************************************************/
 
 	/* Esperar a que la tecla se suelte */
 	while (!(rPDATG & 0x02));
@@ -150,14 +236,5 @@ static void keyboard_ISR(void)
 
     /* Borrar interrupciones pendientes */
     rI_ISPC |= BIT_EINT1;
-
-    if(queue.elements == 4)
-    {
-   	 timer_init(1);
-   	 timer_start(queue);
-    }
-
-
-
 }
 

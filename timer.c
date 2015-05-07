@@ -29,14 +29,18 @@ static void timer_ISR(void) __attribute__ ((interrupt ("IRQ")));
 
 static void timer_ISR( void )
 {
-	if(counter < 4)
+	//Check if the queue is not corrupted
+	if(mQueue.elements != -1)
 	{
-		D8Led_digit(mQueue._queue[counter]);
-		counter++;
-	}
-	else
-	{
-		timer_stop();
+		if(counter < 4)
+		{
+			D8Led_digit(mQueue._queue[counter]);
+			counter++;
+		}
+		else
+		{
+			timer_stop();
+		}
 	}
 
 	rI_ISPC |= BIT_TIMER1;
@@ -161,3 +165,7 @@ void timer_stop(void)
 		 rINTMSK |= BIT_TIMER1;
 }
 
+int timer_isStop()
+{
+	return !timerStarted;
+}

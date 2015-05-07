@@ -26,4 +26,6 @@ void timer_start(tQueue queue);
 
 void timer_stop(void);
 
+int timer_isStop();
+
 #endif

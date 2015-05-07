@@ -49,11 +49,22 @@ void Delay(int time)
 	}
 }
 
-void insertElementToFIFO(tQueue* queue, int element)
+void insertElementToQueue(tQueue* queue, int element)
 {
 	if(queue->elements < 4)
 	{
 		queue->_queue[queue->elements] = element;
 		queue->elements = queue->elements + 1;
+	}
+	else
+	{
+		//Mover la arrey para la izquierda e insertar el nuevo elemento
+		int i;
+		for(i = 0; i < 3; i++)
+		{
+			queue->_queue[i] = queue->_queue[i + 1];
+		}
+
+		queue->_queue[3] = element;
 	}
 }

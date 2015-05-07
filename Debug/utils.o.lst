@@ -193,16 +193,16 @@
  1912              		.cfi_endproc
  1913              	.LFE0:
  1915              		.align	2
- 1916              		.global	insertElementToFIFO
- 1918              	insertElementToFIFO:
+ 1916              		.global	insertElementToQueue
+ 1918              	insertElementToQueue:
  1919              	.LFB1:
   51:../utils.c    **** 
-  52:../utils.c    **** void insertElementToFIFO(tQueue* queue, int element)
+  52:../utils.c    **** void insertElementToQueue(tQueue* queue, int element)
   53:../utils.c    **** {
  1920              		.loc 1 53 0
  1921              		.cfi_startproc
  1922              		@ Function supports interworking.
- 1923              		@ args = 0, pretend = 0, frame = 8
+ 1923              		@ args = 0, pretend = 0, frame = 16
  1924              		@ frame_needed = 1, uses_anonymous_args = 0
  1925 0138 0DC0A0E1 		mov	ip, sp
  1926              	.LCFI2:
@@ -214,34 +214,34 @@
  1932              		.cfi_offset 11, -16
  1933              	.LCFI3:
  1934              		.cfi_def_cfa 11, 4
- 1935 0144 08D04DE2 		sub	sp, sp, #8
- 1936 0148 10000BE5 		str	r0, [fp, #-16]
- 1937 014c 14100BE5 		str	r1, [fp, #-20]
+ 1935 0144 10D04DE2 		sub	sp, sp, #16
+ 1936 0148 18000BE5 		str	r0, [fp, #-24]
+ 1937 014c 1C100BE5 		str	r1, [fp, #-28]
   54:../utils.c    **** 	if(queue->elements < 4)
  1938              		.loc 1 54 0
- 1939 0150 10301BE5 		ldr	r3, [fp, #-16]
+ 1939 0150 18301BE5 		ldr	r3, [fp, #-24]
  1940 0154 B830D3E1 		ldrh	r3, [r3, #8]
  1941 0158 0338A0E1 		mov	r3, r3, asl #16
  1942 015c 4338A0E1 		mov	r3, r3, asr #16
  1943 0160 030053E3 		cmp	r3, #3
- 1944 0164 150000CA 		bgt	.L10
+ 1944 0164 160000CA 		bgt	.L11
   55:../utils.c    **** 	{
   56:../utils.c    **** 		queue->_queue[queue->elements] = element;
  1945              		.loc 1 56 0
- 1946 0168 10301BE5 		ldr	r3, [fp, #-16]
+ 1946 0168 18301BE5 		ldr	r3, [fp, #-24]
  1947 016c B830D3E1 		ldrh	r3, [r3, #8]
  1948 0170 0338A0E1 		mov	r3, r3, asl #16
  1949 0174 4338A0E1 		mov	r3, r3, asr #16
- 1950 0178 14201BE5 		ldr	r2, [fp, #-20]
+ 1950 0178 1C201BE5 		ldr	r2, [fp, #-28]
  1951 017c 0228A0E1 		mov	r2, r2, asl #16
  1952 0180 2228A0E1 		mov	r2, r2, lsr #16
- 1953 0184 10101BE5 		ldr	r1, [fp, #-16]
+ 1953 0184 18101BE5 		ldr	r1, [fp, #-24]
  1954 0188 8330A0E1 		mov	r3, r3, asl #1
  1955 018c 033081E0 		add	r3, r1, r3
  1956 0190 B020C3E1 		strh	r2, [r3, #0]	@ movhi
   57:../utils.c    **** 		queue->elements = queue->elements + 1;
  1957              		.loc 1 57 0
- 1958 0194 10301BE5 		ldr	r3, [fp, #-16]
+ 1958 0194 18301BE5 		ldr	r3, [fp, #-24]
  1959 0198 B830D3E1 		ldrh	r3, [r3, #8]
  1960 019c 0338A0E1 		mov	r3, r3, asl #16
  1961 01a0 2338A0E1 		mov	r3, r3, lsr #16
@@ -250,27 +250,76 @@
  1964 01ac 2338A0E1 		mov	r3, r3, lsr #16
  1965 01b0 0338A0E1 		mov	r3, r3, asl #16
  1966 01b4 2328A0E1 		mov	r2, r3, lsr #16
- 1967 01b8 10301BE5 		ldr	r3, [fp, #-16]
+ 1967 01b8 18301BE5 		ldr	r3, [fp, #-24]
  1968 01bc B820C3E1 		strh	r2, [r3, #8]	@ movhi
- 1969              	.L10:
+ 1969 01c0 180000EA 		b	.L10
+ 1970              	.L11:
+ 1971              	.LBB2:
   58:../utils.c    **** 	}
-  59:../utils.c    **** }
- 1970              		.loc 1 59 0
- 1971 01c0 0CD04BE2 		sub	sp, fp, #12
- 1972 01c4 00689DE8 		ldmfd	sp, {fp, sp, lr}
- 1973 01c8 1EFF2FE1 		bx	lr
- 1974              		.cfi_endproc
- 1975              	.LFE1:
- 1977              	.Letext0:
+  59:../utils.c    **** 	else
+  60:../utils.c    **** 	{
+  61:../utils.c    **** 		//Mover la arrey para la izquierda e insertar el nuevo elemento
+  62:../utils.c    **** 		int i;
+  63:../utils.c    **** 		for(i = 0; i < 3; i++)
+ 1972              		.loc 1 63 0
+ 1973 01c4 0030A0E3 		mov	r3, #0
+ 1974 01c8 10300BE5 		str	r3, [fp, #-16]
+ 1975 01cc 0D0000EA 		b	.L13
+ 1976              	.L14:
+  64:../utils.c    **** 		{
+  65:../utils.c    **** 			queue->_queue[i] = queue->_queue[i + 1];
+ 1977              		.loc 1 65 0 discriminator 2
+ 1978 01d0 10301BE5 		ldr	r3, [fp, #-16]
+ 1979 01d4 013083E2 		add	r3, r3, #1
+ 1980 01d8 18201BE5 		ldr	r2, [fp, #-24]
+ 1981 01dc 8330A0E1 		mov	r3, r3, asl #1
+ 1982 01e0 033082E0 		add	r3, r2, r3
+ 1983 01e4 B020D3E1 		ldrh	r2, [r3, #0]
+ 1984 01e8 18101BE5 		ldr	r1, [fp, #-24]
+ 1985 01ec 10301BE5 		ldr	r3, [fp, #-16]
+ 1986 01f0 8330A0E1 		mov	r3, r3, asl #1
+ 1987 01f4 033081E0 		add	r3, r1, r3
+ 1988 01f8 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+  63:../utils.c    **** 		for(i = 0; i < 3; i++)
+ 1989              		.loc 1 63 0 discriminator 2
+ 1990 01fc 10301BE5 		ldr	r3, [fp, #-16]
+ 1991 0200 013083E2 		add	r3, r3, #1
+ 1992 0204 10300BE5 		str	r3, [fp, #-16]
+ 1993              	.L13:
+  63:../utils.c    **** 		for(i = 0; i < 3; i++)
+ 1994              		.loc 1 63 0 is_stmt 0 discriminator 1
+ 1995 0208 10301BE5 		ldr	r3, [fp, #-16]
+ 1996 020c 020053E3 		cmp	r3, #2
+ 1997 0210 EEFFFFDA 		ble	.L14
+  66:../utils.c    **** 		}
+  67:../utils.c    **** 
+  68:../utils.c    **** 		queue->_queue[3] = element;
+ 1998              		.loc 1 68 0 is_stmt 1
+ 1999 0214 1C301BE5 		ldr	r3, [fp, #-28]
+ 2000 0218 0338A0E1 		mov	r3, r3, asl #16
+ 2001 021c 2328A0E1 		mov	r2, r3, lsr #16
+ 2002 0220 18301BE5 		ldr	r3, [fp, #-24]
+ 2003 0224 B620C3E1 		strh	r2, [r3, #6]	@ movhi
+ 2004              	.L10:
+ 2005              	.LBE2:
+  69:../utils.c    **** 	}
+  70:../utils.c    **** }
+ 2006              		.loc 1 70 0
+ 2007 0228 0CD04BE2 		sub	sp, fp, #12
+ 2008 022c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2009 0230 1EFF2FE1 		bx	lr
+ 2010              		.cfi_endproc
+ 2011              	.LFE1:
+ 2013              	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:00000000 utils.c
-C:\Users\Jorge\AppData\Local\Temp\cczymf2N.s:1782   .data:00000000 $d
-C:\Users\Jorge\AppData\Local\Temp\cczymf2N.s:1785   .data:00000000 delayLoopCount
-C:\Users\Jorge\AppData\Local\Temp\cczymf2N.s:1789   .text:00000000 $a
-C:\Users\Jorge\AppData\Local\Temp\cczymf2N.s:1792   .text:00000000 Delay
-C:\Users\Jorge\AppData\Local\Temp\cczymf2N.s:1904   .text:00000118 $d
-C:\Users\Jorge\AppData\Local\Temp\cczymf2N.s:1915   .text:00000138 $a
-C:\Users\Jorge\AppData\Local\Temp\cczymf2N.s:1918   .text:00000138 insertElementToFIFO
+C:\Users\Jorge\AppData\Local\Temp\ccGkgvxo.s:1782   .data:00000000 $d
+C:\Users\Jorge\AppData\Local\Temp\ccGkgvxo.s:1785   .data:00000000 delayLoopCount
+C:\Users\Jorge\AppData\Local\Temp\ccGkgvxo.s:1789   .text:00000000 $a
+C:\Users\Jorge\AppData\Local\Temp\ccGkgvxo.s:1792   .text:00000000 Delay
+C:\Users\Jorge\AppData\Local\Temp\ccGkgvxo.s:1904   .text:00000118 $d
+C:\Users\Jorge\AppData\Local\Temp\ccGkgvxo.s:1915   .text:00000138 $a
+C:\Users\Jorge\AppData\Local\Temp\ccGkgvxo.s:1918   .text:00000138 insertElementToQueue
                      .debug_frame:00000010 $d
 
 UNDEFINED SYMBOLS
