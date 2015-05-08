@@ -19,6 +19,7 @@
 #include "leds.h"
 #include "D8led.h"
 #include "timer.h"
+#include "utils.h"
 
 
 static int timerStarted = 0;
@@ -40,6 +41,17 @@ static void timer_ISR( void )
 		else
 		{
 			timer_stop();
+
+			if(gameCurrentMode == 0)
+			{
+				gameCurrentMode = 1; //Cambiar de modo
+				D8Led_digit(15); //Mostar F
+			}
+			else
+			{
+				gameCurrentMode = 0; //Cambiar de modo
+				D8Led_digit(12); //Mostar F
+			}
 		}
 	}
 

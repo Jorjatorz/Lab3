@@ -28,7 +28,7 @@ static void keyboard_ISR(void) __attribute__ ((interrupt ("IRQ")));
 
 static tQueue password;
 static tQueue attempt;
-static int gameCurrentMode = 0; //0 -> Asking Password, 1 -> Asking for match
+
 
 void keyboard_init( void )
 {
@@ -173,11 +173,9 @@ static void keyboard_ISR(void)
 				 timer_init(1); //Cada 1 segundo
 				 timer_start(password);
 
-				 while(!timer_isStop())
-				 {}
 
-				gameCurrentMode = 1; //Cambiar de modo
-				D8Led_digit(15); //Mostar F
+				//gameCurrentMode = 1; //Cambiar de modo
+				//D8Led_digit(15); //Mostar F
 			}
 		}
 	}
@@ -196,8 +194,7 @@ static void keyboard_ISR(void)
 			 timer_init(1);
 			 timer_start(attempt);
 
-			 while(!timer_isStop())
-			 {}
+
 				 int equals = 1;
 				 int i;
 				 for(i = 0; i < 4; i++)
@@ -217,22 +214,20 @@ static void keyboard_ISR(void)
 					 D8Led_digit(10); //A
 					 timer_init(2);
 					 timer_start(emptyQ);
-					 while(!timer_isStop())
-					 {}
+
 				 }
 				 else
 				 {
 					 D8Led_digit(14); //E
 					 timer_init(2);
 					 timer_start(emptyQ);
-					 while(!timer_isStop())
-					{}
+
 				 }
 
 
 				 //Volvemos a empezar el juego
-				 gameCurrentMode = 0; //Cambiar de modo
-				 D8Led_digit(15); //Mostar C
+				// gameCurrentMode = 0; //Cambiar de modo
+				 //D8Led_digit(15); //Mostar C
 
 			}
 		}
