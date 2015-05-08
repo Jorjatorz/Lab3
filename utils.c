@@ -20,6 +20,8 @@
 #include "44b.h"
 #define MCLK 64000000
 
+int gameCurrentMode = 0;
+
 //--------------------------------SYSTEM---------------------------------//
 static int delayLoopCount=400;
 

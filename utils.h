@@ -30,6 +30,6 @@ typedef struct
 
 void insertElementToQueue(tQueue* queue, int element);
 
-static int gameCurrentMode = 0; //0 -> Asking Password, 1 -> Asking for match
+extern int gameCurrentMode;//0 -> Asking Password, 1 -> Asking for match
 
 #endif

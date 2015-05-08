@@ -50,9 +50,13 @@ static void timer_ISR( void )
 			else
 			{
 				gameCurrentMode = 0; //Cambiar de modo
-				D8Led_digit(12); //Mostar F
+				D8Led_digit(12); //Mostar C
 			}
 		}
+	}
+	else
+	{
+		timer_stop();
 	}
 
 

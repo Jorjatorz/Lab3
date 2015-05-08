@@ -16,7 +16,6 @@
 **-----------------------------------------------------------------*/
 
 #include "44b.h"
-#include "utils.h"
 #include "keyboard.h"
 #include "timer.h"
 
@@ -26,9 +25,7 @@
 static int key_read( void );
 static void keyboard_ISR(void) __attribute__ ((interrupt ("IRQ")));
 
-static tQueue password;
-static tQueue attempt;
-
+int key = -1;
 
 void keyboard_init( void )
 {
@@ -52,10 +49,7 @@ void keyboard_init( void )
 	 rINTMSK &= ~BIT_EINT1;	 	//Unmask keybouard line
 
 
-	 //Inicializamos la cola y el display para mostrar una C
-	 password.elements = 0;
-	 attempt.elements = 0;
-	 gameCurrentMode = 0;
+	 //Inicializamos el display para mostrar una C
 	 D8Led_digit(12); //Display C
 
 }
@@ -133,8 +127,6 @@ static int key_read( void )
 
 static void keyboard_ISR(void)
 {
-	int key;
-
 	/* Eliminar rebotes de presion */
 	Delay(200);
 
@@ -143,95 +135,21 @@ static void keyboard_ISR(void)
 
 	// En caso de error, key = -1
 	/*if (key != -1)
-		D8Led_digit(key); //Display the key on the D8 Led*/
-
-	/*****************************************GAME LOGIC**********************************************************/
-	//Turns off the leds
-	led1_off();
-	led2_off();
-
-	//Password mode
-	if(gameCurrentMode == 0)
+		D8Led_igit(key); //Display the key on the D8 Led*/
+	if(key == -1)
 	{
-		//Si la tecla pulsada no es la F
-		if(key != 15)
-		{
-			if (key > 0) //Is a valid key
-				insertElementToQueue(&password, key);
-			else {
-				//There was an error reading the key -> Turn on the leds
-				led1_on();
-				led2_on();
-			}
-
-		}
-		else
-		{
-			//Si la pass tiene 4 digitos msotrarlos cada segundo, sino no hacer nada
-			if(password.elements == 4)
-			{
-				 timer_init(1); //Cada 1 segundo
-				 timer_start(password);
-
-
-				//gameCurrentMode = 1; //Cambiar de modo
-				//D8Led_digit(15); //Mostar F
-			}
-		}
+		//There was an error reading the key -> Turn on the leds
+		led1_on();
+		led2_on();
 	}
 	else
 	{
-		//Si la tecla pulsada no es la F
-		if(key != 15)
-		{
-			insertElementToQueue(&attempt, key);
-		}
-		else
-		{
-			//Si el attempt tiene 4 digitos msotrarlos cada segundo, sino no hacer nada
-			if(attempt.elements == 4)
-			{
-			 timer_init(1);
-			 timer_start(attempt);
-
-
-				 int equals = 1;
-				 int i;
-				 for(i = 0; i < 4; i++)
-				 {
-					 if(password._queue[i] != attempt._queue[i])
-					 {
-						 equals = 0;
-						 break;
-					 }
-				 }
-
-				 //Hacer una lista negativa para que el timer no la muestre
-				 tQueue emptyQ;
-				 emptyQ.elements = -1;
-				 if(equals == 1)
-				 {
-					 D8Led_digit(10); //A
-					 timer_init(2);
-					 timer_start(emptyQ);
-
-				 }
-				 else
-				 {
-					 D8Led_digit(14); //E
-					 timer_init(2);
-					 timer_start(emptyQ);
-
-				 }
-
-
-				 //Volvemos a empezar el juego
-				// gameCurrentMode = 0; //Cambiar de modo
-				 //D8Led_digit(15); //Mostar C
-
-			}
-		}
+		/*****************************************GAME LOGIC**********************************************************/
+		//Turns off the leds
+		led1_off();
+		led2_off();
 	}
+
 	/**************************************************************************************************************/
 
 	/* Esperar a que la tecla se suelte */
