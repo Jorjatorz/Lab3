@@ -43,7 +43,7 @@ int main(void)
 				//Si la tecla pulsada no es la F
 				while(key != 15)
 				{
-					if (key > 0 && key != 15) //Is a valid key
+					if (key >= 0 && key != 15) //Is a valid key
 					{
 						insertElementToQueue(&password, key);
 						key = -1;
@@ -78,7 +78,7 @@ int main(void)
 				//Si la tecla pulsada no es la F
 				while(key != 15)
 				{
-					if (key > 0 && key != 15) //Is a valid key
+					if (key >= 0 && key != 15) //Is a valid key
 					{
 						insertElementToQueue(&attempt, key);
 						key = -1;

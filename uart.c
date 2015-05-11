@@ -31,15 +31,28 @@ void Uart_Init(int baud)
     /* UART0 */
 	// Modo normal, no paridad, 1b stop, 8b char
 
-	// tx=nivel, rx=flanco, no rx-timeout ni rx-error, normal, int/polling
+	rULCON0 &= (1<<9);
+	rULCON0 |= 0x3;
 
+	rULCON0 = 0x3;
+	/*[1:0] Work length = 11 (8-bits)
+	 * [2] Number of stop bit = 0 (One stop bit per frame)
+	 * [5:3] Parity mode = 0xx (No parity
+	 * [6] Infra- Red Mode = 0 (Normal mode operation)
+	 * [7] Reserved
+	 */
+
+
+	// tx=nivel, rx=flanco, no rx-timeout ni rx-error, normal, int/polling
+	rUCON0 = 0x205;
 
 	rUBRDIV0=( (int)(MCLK/16./baud + 0.5) -1 ); // formula division de frecuencia
 
 	// Desactivar FIFO
+	rUFCON0 = 0x0;
 
 	// Desactivar control de flujo
-
+	rUMCON0 = 0x0;
 
 }
 
@@ -49,10 +62,12 @@ void Uart_Init(int baud)
 char Uart_Getch(void)
 {
      // esperar a que el buffer contenga datos
-
+	while((rUTRSTAT0 & 0x1) == 0x0) {}
 
 	// devolver el caracter
+	char* point = (char*)URXH0;
 
+	return *point;
 
 }
 
@@ -68,13 +83,16 @@ void Uart_SendByte(char data)
 	   while (!(rUTRSTAT0 & 0x2));
 
 	   // escribir retorno de carro (caracter \r)
+	   char* point = UTXH0;
+	   *point = 0xd;
 
 	}
     // esperar a que THR se vacie
 	while (!(rUTRSTAT0 & 0x2));
 
 	// escribir data
-
+	   char* point = UTXH0;
+	   *point = data;
 
 }
 
