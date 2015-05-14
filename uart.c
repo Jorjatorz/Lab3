@@ -93,7 +93,6 @@ void Uart_SendByte(char data)
 	// escribir data
 	   char* point = UTXH0;
 	   *point = data;
-
 }
 
 

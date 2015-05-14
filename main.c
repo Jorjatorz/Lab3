@@ -20,6 +20,16 @@
 #include "D8Led.h"
 #include "timer.h"
 #include "keyboard.h"
+#include "uart.h"
+
+void intcont_init(void) {
+	rINTCON = 0x1;			// - Modo vectorizado, FIQ deshabilitadas
+	rINTMOD = 0x0;	// - Configurar todas las interrupciones por IRQ
+	rI_ISPC = 0x3ffffff;	//  -Borramos pendientes por IRQ
+	rF_ISPC = 0x3ffffff; 	//  -Borramos pendientes FIQ
+	rEXTINTPND = 0x0;		// - Borrar EXTINPND
+	rINTMSK = 0x7FFFFFF;	// - Enmascarar todas las líneas, pero activar BIT_GLOBAL
+}
 
 int main(void)
 {	
@@ -28,6 +38,7 @@ int main(void)
 	D8Led_digit( 0 );  	//Displays 0 in the 8Segment display
 	keyboard_init(); 	//Initialize the configuration of the matrix keyboard
 	leds_init(); //Initializes the leds
+	Uart_Init(115200); //Initliaze the UART to read 115200 bits per second
 		
 	tQueue password;
 	tQueue attempt;
@@ -75,13 +86,23 @@ int main(void)
 
 			else
 			{
-				//Si la tecla pulsada no es la F
-				while(key != 15)
+				//Se ha cambiado de modo, enviamos el mensaje
+				Uart_Printf("Enter a key");
+
+				//Leemos hasta que encontramos \n
+				int finLinea = 0;
+				while(!finLinea)
 				{
-					if (key >= 0 && key != 15) //Is a valid key
+					//Leemos del p. serie
+					char readC = Uart_Getch();
+
+					if (readC != '\n')
 					{
-						insertElementToQueue(&attempt, key);
-						key = -1;
+						insertElementToQueue(&attempt, readC - 48); //Char to int;
+					}
+					else
+					{
+						finLinea = 1;
 					}
 				}
 
@@ -108,8 +129,10 @@ int main(void)
 						 //Hacer una lista negativa para que el timer no la muestre
 						 tQueue emptyQ;
 						 emptyQ.elements = -1;
-						 if(equals == 1)
+						 if(equals == 1) //Attempt correcto!
 						 {
+							 //Se ha acertado la contraseña
+							 Uart_Printf("CORRECT");
 							 D8Led_digit(10); //A
 							 timer_init(2);
 							 timer_start(emptyQ);
@@ -117,6 +140,7 @@ int main(void)
 						 }
 						 else
 						 {
+							 Uart_Printf("ERROR");
 							 D8Led_digit(14); //E
 							 timer_init(2);
 							 timer_start(emptyQ);
@@ -144,13 +168,4 @@ int main(void)
 
 
 	return 0;
-}
-
-void intcont_init(void) {
-	rINTCON = 0x1;			// - Modo vectorizado, FIQ deshabilitadas
-	rINTMOD = 0x0;	// - Configurar todas las interrupciones por IRQ
-	rI_ISPC = 0x3ffffff;	//  -Borramos pendientes por IRQ
-	rF_ISPC = 0x3ffffff; 	//  -Borramos pendientes FIQ
-	rEXTINTPND = 0x0;		// - Borrar EXTINPND
-	rINTMSK = 0x7FFFFFF;	// - Enmascarar todas las líneas, pero activar BIT_GLOBAL
 }
