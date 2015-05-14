@@ -99,9 +99,21 @@ void Uart_SendByte(char data)
 // Función ya implementada: envía una cadena de caracteres completa (hasta que encuentra \0)
 void Uart_SendString(char *pt)
 {
-	 // mandar byte a byte hasta completar string
+	//Mandar string con DMA (Esto es lo que tenemos que hacer en la parte 3)
+
+
+	//Configure Data Size(Byte), increment address and initial address = pt;
+	rBDISRC0 = 0x1000000 ; //Configure Data size and increment address
+    pt &= 0xFFFFFFF; //Adapts the initial address
+    rBDISRC0 |= pt; //Insert the address in the register;
+
+
+	/*
+	 // Mandar byte a byte hasta completar string sin DMA
     while (*pt)
     	Uart_SendByte(*pt++);
+
+    	*/
 }
 
 // Función ya implementado: similar a printf pero enviando por puerto serie
