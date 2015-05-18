@@ -102,29 +102,24 @@ void Uart_SendString(char *pt)
 	//Mandar string con DMA (Esto es lo que tenemos que hacer en la parte 3)
 
 	//BDCONn: Enable DMA request, No command
-	rBDCON0 &= 0x0; //4 last bits to 0: Enable DMA request and No command
+	rBDCON0 &= 0xF0; //4 last bits to 0: Enable DMA request and No command
 
 	//BDISRCn: Configure Data Size(Byte), increment address and initial address = pt;
 	rBDISRC0 = 0x1000000 ; //Configure Data size and increment address
-    pt &= 0xFFFFFFF; //Adapts the initial address
-    rBDISRC0 |= pt; //Insert the address in the register;
 
-    //BDIDESn: Transfer direction mode: IO2M, Increment address and initial address
-    rBDIDES0 = 0x90000000 ; //Configure IO2M and increment address
-    pt &= 0xFFFFFFF; //Adapts the initial address
-    rBDIDES0 |= pt; //Insert the address in the register;
+    rBDISRC0 |= (unsigned int)pt; //Insert the address in the register;
 
-    //BDICNT0 and BDCCNT0: UART0 request, polling mode, enable auto-reload, enable DMA, 1 byte transfer
-    rBDICNT0 = 0x84300001; //Reserved fields are left in their initial state
-    rBDCCNT0 = 0x84300001; //Reserved fields are left in their initial state
+    //BDIDESn: Transfer direction mode: M2IO, Increment address and initial address
+    rBDIDES0 = 0x50000000 ; //Configure M2IO and increment address
+    rBDIDES0 |= (unsigned int)UTXH0; //Set destination register the UART;
 
 
-	/*
-	 // Mandar byte a byte hasta completar string sin DMA
-    while (*pt)
-    	Uart_SendByte(*pt++);
+    unsigned int counter = sizeof(pt) / sizeof(char);
 
-    	*/
+    //BDICNT0 and BDCCNT0: N/A request, polling mode, disenable auto-reload, enable DMA, string length byte transfer
+    rBDICNT0 = 0x4000000;
+    rBDICNT0 |= counter;
+    rBDICNT0 |= (1 << 20);
 }
 
 // Función ya implementado: similar a printf pero enviando por puerto serie
