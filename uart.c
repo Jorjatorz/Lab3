@@ -105,21 +105,27 @@ void Uart_SendString(char *pt)
 	rBDCON0 &= 0xF0; //4 last bits to 0: Enable DMA request and No command
 
 	//BDISRCn: Configure Data Size(Byte), increment address and initial address = pt;
-	rBDISRC0 = 0x1000000 ; //Configure Data size and increment address
+	rBDISRC0 = 0x10000000 ; //Configure Data size and increment address
 
     rBDISRC0 |= (unsigned int)pt; //Insert the address in the register;
 
     //BDIDESn: Transfer direction mode: M2IO, Increment address and initial address
-    rBDIDES0 = 0x50000000 ; //Configure M2IO and increment address
+    //rBDIDES0 = 0x50000000 ; //Configure M2IO and increment address
+    rBDIDES0 = 0xD0000000 ; //Configure IO2IO and increment address
     rBDIDES0 |= (unsigned int)UTXH0; //Set destination register the UART;
 
 
-    unsigned int counter = sizeof(pt) / sizeof(char);
+    //unsigned int counter = sizeof(*pt)/ sizeof(char);
 
-    //BDICNT0 and BDCCNT0: N/A request, polling mode, disenable auto-reload, enable DMA, string length byte transfer
+    const char *s;
+    for (s = pt; *s; ++s);
+    unsigned int counter = s - pt; //This works
+
+    //BDICNT0 : N/A request, polling mode, disenable auto-reload, enable DMA, string length byte transfer
     rBDICNT0 = 0x4000000;
     rBDICNT0 |= counter;
     rBDICNT0 |= (1 << 20);
+    //rBDICNT0 |= (1 << 31); //Activates DMA source selection to UART0 (N/A by default)
 }
 
 // Función ya implementado: similar a printf pero enviando por puerto serie
