@@ -87,7 +87,7 @@ int main(void)
 			else
 			{
 				//Se ha cambiado de modo, enviamos el mensaje
-				Uart_Printf("Enter a key");
+				Uart_Printf("Enter a key\n");
 
 				//Leemos hasta que encontramos \n
 				int finLinea = 0;
@@ -132,7 +132,7 @@ int main(void)
 						 if(equals == 1) //Attempt correcto!
 						 {
 							 //Se ha acertado la contraseña
-							 Uart_Printf("CORRECT");
+							 Uart_Printf("CORRECT\n");
 							 D8Led_digit(10); //A
 							 timer_init(2);
 							 timer_start(emptyQ);
@@ -140,7 +140,7 @@ int main(void)
 						 }
 						 else
 						 {
-							 Uart_Printf("ERROR");
+							 Uart_Printf("ERROR\n");
 							 D8Led_digit(14); //E
 							 timer_init(2);
 							 timer_start(emptyQ);

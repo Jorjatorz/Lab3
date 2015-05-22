@@ -80,7 +80,7 @@ void Uart_SendByte(char data)
 	   while (!(rUTRSTAT0 & 0x2));
 
 	   // escribir retorno de carro (caracter \r)
-		rUTXH0 = 0x13;
+		rUTXH0 = 0xD;
 
 	}
     // esperar a que THR se vacie
