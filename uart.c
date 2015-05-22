@@ -31,10 +31,9 @@ void Uart_Init(int baud)
     /* UART0 */
 	// Modo normal, no paridad, 1b stop, 8b char
 
-	rULCON0 &= (1<<9);
+	rULCON0 &= 0x80;
 	rULCON0 |= 0x3;
 
-	rULCON0 = 0x3;
 	/*[1:0] Work length = 11 (8-bits)
 	 * [2] Number of stop bit = 0 (One stop bit per frame)
 	 * [5:3] Parity mode = 0xx (No parity
@@ -62,12 +61,10 @@ void Uart_Init(int baud)
 char Uart_Getch(void)
 {
      // esperar a que el buffer contenga datos
-	while((rUTRSTAT0 & 0x1) == 0x0) {}
+	while(!(rUTRSTAT0 & 0x1));
 
 	// devolver el caracter
-	char* point = (char*)URXH0;
-
-	return *point;
+	return rURXH0;
 
 }
 
@@ -83,16 +80,14 @@ void Uart_SendByte(char data)
 	   while (!(rUTRSTAT0 & 0x2));
 
 	   // escribir retorno de carro (caracter \r)
-	   char* point = UTXH0;
-	   *point = 0xd;
+		rUTXH0 = 0xD;
 
 	}
     // esperar a que THR se vacie
 	while (!(rUTRSTAT0 & 0x2));
 
 	// escribir data
-	   char* point = UTXH0;
-	   *point = data;
+	rUTXH0 = data;
 }
 
 
@@ -110,15 +105,16 @@ void Uart_SendString(char *pt)
     rBDISRC0 |= (unsigned int)pt; //Insert the address in the register;
 
     //BDIDESn: Transfer direction mode: M2IO, Increment address and initial address
-    //rBDIDES0 = 0x50000000 ; //Configure M2IO and increment address
-    rBDIDES0 = 0xD0000000 ; //Configure IO2IO and increment address
-    rBDIDES0 |= (unsigned int)UTXH0; //Set destination register the UART;
+    rBDIDES0 = 0x50000000 ; //Configure M2IO and increment address
+    //rBDIDES0 = 0xD0000000 ; //Configure IO2IO and increment address
+    rBDIDES0 |= rUTXH0; //Set destination register the UART;
 
 
     //unsigned int counter = sizeof(*pt)/ sizeof(char);
 
     const char *s;
     for (s = pt; *s; ++s);
+
     unsigned int counter = s - pt; //This works
 
     //BDICNT0 : N/A request, polling mode, disenable auto-reload, enable DMA, string length byte transfer
