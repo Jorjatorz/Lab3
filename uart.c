@@ -97,27 +97,26 @@ void Uart_SendString(char *pt)
 	//Mandar string con DMA (Esto es lo que tenemos que hacer en la parte 3)
 
 	//BDCONn: Enable DMA request, No command
-	rBDCON0 &= 0xF0; //4 last bits to 0: Enable DMA request and No command
+	rBDCON0 &= 0xF0; //4 last bits to unk: Enable DMA request and No command
 
 	//BDISRCn: Configure Data Size(Byte), increment address and initial address = pt;
-	rBDISRC0 = 0x10000000 ; //Configure Data size and increment address
+	rBDISRC0 = 0x30000000 ; //Configure Data size and increment address
 
     rBDISRC0 |= (unsigned int)pt; //Insert the address in the register;
 
+
     //BDIDESn: Transfer direction mode: M2IO, Increment address and initial address
-    rBDIDES0 = 0x50000000 ; //Configure M2IO and increment address
-    //rBDIDES0 = 0xD0000000 ; //Configure IO2IO and increment address
-    rBDIDES0 |= rUTXH0; //Set destination register the UART;
+    //rBDIDES0 = 0x70000000 ; //Configure M2IO and increment address
+    rBDIDES0 = 0xF0000000 ; //Configure IO2IO and increment address
+    rBDIDES0 |= 0x1d00020; //Set destination register the UART;
 
-
-    //unsigned int counter = sizeof(*pt)/ sizeof(char);
 
     const char *s;
     for (s = pt; *s; ++s);
 
     unsigned int counter = s - pt; //This works
 
-    //BDICNT0 : N/A request, polling mode, disenable auto-reload, enable DMA, string length byte transfer
+    //BDICNT0 : N/A request, polling mode, disable auto-reload, enable DMA, string length byte transfer
     rBDICNT0 = 0x4000000;
     rBDICNT0 |= counter;
     rBDICNT0 |= (1 << 20);
